@@ -23,8 +23,12 @@ def main():
 
     # Extraer datos y exportar a Excel
     datos = extraer_datos(driver)
-    df = pd.DataFrame(datos)
-    df.to_excel('output.xlsx', index=False)
+    if datos:
+        df = pd.DataFrame(datos)
+        df.to_excel('reporte.xlsx', index=False)
+        print("Datos extraídos y guardados")
+    else:
+        print("No se ha extraido informacion")
 
     driver.quit()
 

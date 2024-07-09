@@ -1,4 +1,7 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import pandas as pd
 import time
 
 def extraer_datos(driver):
@@ -6,36 +9,42 @@ def extraer_datos(driver):
     
     while True:
         # Esperar a que la tabla cargue
-        time.sleep(2)
+        try:
+            table = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, '//table[contains(@class, "list issues")]'))
+            )
+            print("Visualizacion de incidencias encontradas en la tabla")
+        except Exception as e:
+            print(f"Error al encontrar incidencias en la tabla: {e}")
+            break
         
-        # Encontrar todas las filas en la tabla de peticiones
-        filas = driver.find_elements(By.XPATH, '//table[@class="list issues"]/tbody/tr')
-        
-        for fila in filas:
-            columnas = fila.find_elements(By.TAG_NAME, 'td')
-            proyecto = columnas[1].text
-            tipo = columnas[2].text
-            estado = columnas[3].text
-            prioridad = columnas[4].text
-            asunto = columnas[5].text
-            asignado_a = columnas[6].text
-            actualizado = columnas[7].text
-            
-            datos.append({
-                'Proyecto': proyecto,
-                'Tipo': tipo,
-                'Estado': estado,
-                'Prioridad': prioridad,
-                'Asunto': asunto,
-                'Asignado a': asignado_a,
-                'Actualizado': actualizado
-            })
-        
+        rows = table.find_elements(By.XPATH, './/tbody/tr')
+        for row in rows:
+            columns = row.find_elements(By.XPATH, './/td')
+            if len(columns) == 8:  # Asegurarse de que haya exactamente 8 columnas
+               if "BAC InfraNoProd" in columns[6].text:
+                    datos.append({
+                        '#': columns[0].text,
+                        'Proyecto': columns[1].text,
+                        'Tipo': columns[2].text,
+                        'Estado': columns[3].text,
+                        'Prioridad': columns[4].text,
+                        'Asunto': columns[5].text,
+                        'Asignado a': columns[6].text,
+                        'Actualizado': columns[7].text
+                    })
+        print(f"Informacion capturada de: {len(datos)}")
+
         # Verificar si hay una segunda página
         try:
-            siguiente_pagina = driver.find_element(By.XPATH, '//a[@class="next_page"]')
+            siguiente_pagina = driver.find_element(By.XPATH, '//a[@rel="next"]')
             siguiente_pagina.click()
+            WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, '//table[contains(@class, "list issues")]//tbody/tr'))
+            )
+            print("Redirecionando a siguiente pagina")
         except:
+            print("No hay mas paginas encontradas, error de navegacion")
             break
     
     return datos
