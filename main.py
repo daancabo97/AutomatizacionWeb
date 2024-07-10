@@ -28,7 +28,7 @@ def main():
         df.to_excel('reporte.xlsx', index=False)
         print("Datos extraídos y guardados")
     else:
-        print("No se ha extraido informacion")
+        print("No se ha extraído información")
 
     driver.quit()
 

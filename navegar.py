@@ -1,7 +1,6 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import pandas as pd
 import time
 
 def navegar_al_proyecto(driver):
@@ -13,7 +12,7 @@ def navegar_al_proyecto(driver):
         peticiones_tab.click()
         print("Clickear en 'Peticiones' tab")
     except Exception as e:
-        print(f"Error al clickear en'Peticiones' tab: {e}")
+        print(f"Error al clickear en 'Peticiones' tab: {e}")
         return
 
     # Esperar a que cargue la página
@@ -27,7 +26,7 @@ def navegar_al_proyecto(driver):
         proyecto_dropdown.click()
         print("Clickear en ...ir a proyectos")
     except Exception as e:
-        print(f"Error filtrando busqueda en ...ir a proyectos: {e}")
+        print(f"Error filtrando búsqueda en ...ir a proyectos: {e}")
         return
 
     time.sleep(1)
@@ -40,7 +39,7 @@ def navegar_al_proyecto(driver):
         proyecto.click()
         print("Seleccionar 'BAC - Soporte Infraestructura'")
     except Exception as e:
-        print(f"Error selecccionando proyecto: {e}")
+        print(f"Error seleccionando proyecto: {e}")
         return
 
     # Esperar a que cargue la página del proyecto
