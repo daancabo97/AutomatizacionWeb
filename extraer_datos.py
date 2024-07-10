@@ -18,9 +18,9 @@ def extraer_datos(driver):
             print(f"Error al encontrar incidencias en la tabla: {e}")
             break
 
-        rows = table.find_elements(By.XPATH, './/tbody/tr')
-        for row in rows:
-            columns = row.find_elements(By.XPATH, './/td')
+        filas = table.find_elements(By.XPATH, './/tbody/tr')
+        for fila in filas:
+            columns = fila.find_elements(By.XPATH, './/td')
             if len(columns) >= 8:  # Asegurarse de que haya al menos 8 columnas
                 if "BAC InfraNoProd" in columns[7].text:
                     datos.append({
@@ -34,9 +34,9 @@ def extraer_datos(driver):
                         'Actualizado': columns[8].text
                     })
 
-        print(f"Información capturada de: {len(datos)} elementos")
+        print(f"Se han capturado: {len(datos)} casos asignados a BAC InfraNoProd")
 
-        # Verificar si hay una segunda página
+        # Verificar si hay mas casos en las siguientes páginas
         try:
             siguiente_pagina = driver.find_element(By.XPATH, '//a[@rel="next"]')
             siguiente_pagina.click()
@@ -52,7 +52,7 @@ def extraer_datos(driver):
         # Crear DataFrame y exportar a Excel
         df = pd.DataFrame(datos)
         df.to_excel('reporte.xlsx', index=False)
-        print("Datos extraídos y guardados en reporte.xlsx")
+        print("Casos extraídos y guardados en reporte.xlsx")
     else:
         print("No se ha extraído información")
     
