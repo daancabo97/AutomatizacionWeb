@@ -35,8 +35,11 @@ def extraer_datos(driver):
                     })
 
         print(f"Se han capturado: {len(datos)} casos asignados a BAC InfraNoProd")
+        
+        # Notificación de casos capturados
+        notificacion(driver, f"Se han capturado: {len(datos)} casos asignados a BAC InfraNoProd", "info", time_out=10000)
 
-        # Verificar si hay mas casos en las siguientes páginas
+        # Verificar si hay más casos en las siguientes páginas
         try:
             siguiente_pagina = driver.find_element(By.XPATH, '//a[@rel="next"]')
             siguiente_pagina.click()
@@ -53,7 +56,27 @@ def extraer_datos(driver):
         df = pd.DataFrame(datos)
         df.to_excel('reporte.xlsx', index=False)
         print("Casos extraídos y guardados en reporte.xlsx")
+        notificacion(driver, "Casos extraídos y guardados en reporte.xlsx", "success", time_out=60000)
     else:
         print("No se ha extraído información")
+        notificacion(driver, "No se ha extraído información", "warning", time_out=60000)
     
     return datos
+
+def notificacion(driver, mensaje, tipo, time_out=10000):
+    # Esperar un momento para asegurarse de que Toastr esté cargado
+    driver.implicitly_wait(2)
+    
+    # Ejecutar el script de Toastr para mostrar la notificación
+    toastr_script = f'''
+        toastr.options.timeOut = {time_out}; // Tiempo personalizado
+        toastr.options.extendedTimeOut = {time_out // 2}; // Tiempo adicional
+        toastr.options.positionClass = 'toast-top-right';
+        toastr.options.closeButton = true;
+        toastr.options.preventDuplicates = true;
+        toastr.options.hideDuration = 300;
+        toastr.options.showDuration = 300;
+        toastr.options.newestOnTop = false;
+        toastr["{tipo}"]("{mensaje}");
+    '''
+    driver.execute_script(toastr_script)

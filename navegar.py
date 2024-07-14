@@ -15,7 +15,7 @@ def navegar_al_proyecto(driver):
         print(f"Error al clickear en 'Peticiones' tab: {e}")
         return
 
-    # Esperar a que cargue la página
+    
     time.sleep(2)
 
     # Seleccionar el dropdown de proyectos "Ir al proyecto..."
@@ -42,5 +42,5 @@ def navegar_al_proyecto(driver):
         print(f"Error seleccionando proyecto: {e}")
         return
 
-    # Esperar a que cargue la página del proyecto
+    
     time.sleep(3)
