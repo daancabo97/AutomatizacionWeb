@@ -5,6 +5,6 @@ __pycache__/
 # Ignorar entorno virtual
 venv/
 
-# Ignorar archivos de configuración específicos de IDE (por ejemplo, VSCode, PyCharm)
+# Ignorar archivos de configuración específicos de IDE 
 .vscode/
 .idea/
