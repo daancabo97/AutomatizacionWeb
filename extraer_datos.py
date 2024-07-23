@@ -3,7 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 def extraer_datos(driver, filtros):
-    datos = []
+    datos = {filtro: [] for filtro in filtros}
 
     while True:
         # Esperar a que la tabla cargue
@@ -22,7 +22,7 @@ def extraer_datos(driver, filtros):
             if len(columns) >= 8:
                 for filtro in filtros:
                     if filtro in columns[7].text:
-                        datos.append({
+                        datos[filtro].append({
                             '#': columns[1].text,
                             'Proyecto': columns[2].text,
                             'Tipo': columns[3].text,
@@ -34,10 +34,13 @@ def extraer_datos(driver, filtros):
                         })
                         break
 
-        print(f"Se han capturado: {len(datos)} casos asignados a {', '.join(filtros)}")
-
-        # Notificación de casos capturados
-        notificacion(driver, f"Se han capturado: {len(datos)} casos asignados a {', '.join(filtros)}", "info", time_out=10000)
+        # Notificación de casos capturados para cada filtro
+        for filtro in filtros:
+            num_casos = len(datos[filtro])
+            if num_casos > 0:
+                notificacion(driver, f"Se han capturado: {num_casos} casos asignados a {filtro}", "info", time_out=10000)
+            else:
+                notificacion(driver, f"No se han encontrado casos de '{filtro}' en las siguientes páginas", "warning", time_out=10000)
 
         # Verificar si hay más casos en las siguientes páginas
         try:
@@ -48,10 +51,15 @@ def extraer_datos(driver, filtros):
             )
             print("Redireccionando a la siguiente página")
         except:
-            print(f"No hay más casos de '{', '.join(filtros)}' en las siguientes páginas")
+            print("No hay más páginas")
             break
 
-    return datos
+    # Consolidar datos en una sola lista
+    datos_consolidados = []
+    for lista in datos.values():
+        datos_consolidados.extend(lista)
+    
+    return datos_consolidados
 
 def notificacion(driver, mensaje, tipo, time_out=10000):
     # Esperar un momento para asegurarse de que Toastr esté cargado

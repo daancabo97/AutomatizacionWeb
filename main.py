@@ -25,13 +25,15 @@ def main():
     # Agregar Toastr para notificaciones
     agregar_toastr(driver)
 
-    # Extraer datos y exportar a Excel
-    datos_bac_infra = extraer_datos(driver, ["BAC InfraNoProd"])
-    datos_giovanni = extraer_datos(driver, ["Giovanni Castelblanco"])
-    datos_steven = extraer_datos(driver, ["Steven Garcia"])
+    # Filtrar casos para los nombres especificados
+    filtros = [
+        "BAC InfraNoProd", "Giovanni Castelblanco", "Steven Garcia",
+        "Raul Garzon", "Fabian Pinto", "Andres Sandoval",
+        "Cristian Gonzalez", "Sandra Gutierrez", "Andres Muñoz"
+    ]
 
-    # Reporte de todos los datos del consolidado en una sola lista (1 hoja excel)
-    datos_consolidados = datos_bac_infra + datos_giovanni + datos_steven
+    # Extraer datos y consolidar
+    datos_consolidados = extraer_datos(driver, filtros)
 
     if datos_consolidados:
         df_consolidados = pd.DataFrame(datos_consolidados)
